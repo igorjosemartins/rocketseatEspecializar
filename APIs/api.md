@@ -584,3 +584,35 @@ const newUser = {
     city: "Florianópolis"
 }
 ```
+
+
+
+## PUT
+
+-> bem semelhante ao `fetch`, porém o axios já tem uma função `put` que facilita o processo
+
+```js
+function updateUser(id, userUpdated) {
+    axios.put(`${url}/${id}`, userUpdated)
+        .then(res => console.log(res))
+        .catch(e => console.error(e))
+}
+
+const userUpdated = {
+    name: "Axios PUT test",
+    avatar: "https://picsum.photos/200/300",
+    city: "test"
+}
+```
+
+
+
+## DELETE
+
+```js
+function deleteUser(id) {
+    axios.delete(`${url}/${id}`)
+    .then(res => console.log(res))
+    .catch(e => console.error(e))
+}
+```
