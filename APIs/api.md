@@ -355,3 +355,232 @@ app.route('/').get( (req, res) => {
 
 
 # API no front-end com Fetch
+
+-> baixar a API pelo repositório: https://github.com/jakeliny/node-api-discover
+    -> npm i
+    -> npm start
+
+
+
+## GET
+
+-> com a API rodando, construimos um mini front-end com um index.html e um main.js
+
+-> no html botamos uma div no body com a id de `renderApiResult`
+
+-> no arquivo js atribuímos a url da nossa API a uma variável
+
+-> utilizamos a função `fetch` para podermos trabalhar a resposta
+
+-> utilizamos um segundo `.then` para jogar esta resposta para nossa div lá no html
+    -> `.textContent` retorna todo o conteúdo em texto de um elemento
+    -> `JSON.stringify` = transforma JSON em texto
+
+-> como resultado, é mostrado na página o mesmo conteúdo da API, porém agora no nosso front
+
+
+```js
+const url = "http://localhost:5500/api"
+
+function getUsers() {
+    fetch(url)
+        .then(res =>res.json())
+        .then(data => renderApiResult.textContent = JSON.stringify(data))
+        .catch(e => console.error(e))
+}
+
+getUsers()
+```
+
+
+
+## GET com parâmetros
+
+-> agora criamos outra função para pegar apenas UM usuário
+    -> fazemos isso botando o id `1` na url
+
+-> com isso, criamos 3 tags html para cada conteúdo da API, no caso `name`, `city` e `avatar`
+
+-> utilizamos novamente o `.textContent` e o `src` (para imagens) passando agora os parâmetros da resposta da API
+
+-> com isso temos os 3 conteúdos no nosso front 
+
+-> podemos passar o `id` como parâmetro, trazendo dinâmica na aplicação
+    -> com isso podemos escolher qual usuário será mostrado na parte de baixo
+
+
+```js
+function getUser(id) {
+    fetch(`${url}/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            userName.textContent = data.name
+            userCity.textContent = data.city
+            userAvatar.src = data.avatar
+        })
+        .catch(e => console.error(e))
+}
+```
+
+
+
+## POST
+
+-> por padrão, o método do `fetch` é o GET, portanto para utilizarmos o POST, passamos um objeto como segundo parâmetro da função
+    -> passamos o método, no caso POST
+    -> o corpo do que queremos enviar, no caso o conteúdo armazenado na constante newUser
+    -> e os headers que são padrão
+
+-> na nossa API, a resposta de um POST é apenas um texto, para não deixarmos ela em qualquer lugar iremos organiza-la
+    -> criamos uma div com id `alertApi`, vai servir como se fosse um status da requisição
+    -> atribumos a ela a resposta como `data`
+
+-> por fim criamos um objeto para armazenar os dados do nosso novo usuário
+
+
+```js
+function addUser(newUser) {
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify(newUser),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+    .then(res => res.json())
+    .then(data => alertApi.textContent = data)
+    .catch(e => console.error(e))
+}
+
+const newUser = {
+    name: "Igor Martins",
+    avatar: "",
+    city: "Florianópolis"
+}
+```
+
+
+
+## PUT
+
+-> sempre consultar a documentação da API, para saber o que cada método irá esperar
+    -> por exemplo, nessa o método PUT espera um `id` após a url, este mesmo `id` também pode ser passado no body, porém temos que verificar a documentação
+
+-> mesma lógica do POST, porém agora com um usuário já existente, ou seja, editamos
+
+
+```js
+function updateUser(updatedUser, id) {
+    fetch(`${url}/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(updatedUser),
+        headers: {"Content-type": "application/json; chartset=UTF-8"}
+    })
+        .then(res => res.json())
+        .then(data => alertApi.textContent = data)
+        .catch(e => console.error(e))
+}
+
+const updatedUser = {
+    name: "PUT test",
+    avatar: "https://picsum.photos/200/300",
+    city: "PUT test"
+}
+```
+
+
+
+## DELETE
+
+-> funciona como os outros, porém agora deletamos um usuário a partir do seu `id`
+
+-> por ser uma ação de excluir um usuário, não precisamos do `body`, já que não enviaremos nenhum dado 
+
+```js
+function deleteUser(id) {
+    fetch(`${url}/${id}`, {
+        method: "DELETE",
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+    })
+        .then(res => res.json())
+        .then(data => alertApi.textContent = data)
+        .catch(e => console.error(e))
+}
+```
+
+
+
+
+
+# API no Front-End com Axios
+
+-> https://github.com/jakeliny/axios-api
+
+
+
+## GET
+
+```js
+const url = "https://localhost:5500/api"
+
+function getUsers() {
+    axios.get(url)
+        .then(res => {
+            apiResult.textContent = JSON.stringify(res.data)
+        })
+        .catch(e => console.error(e))
+}
+```
+
+
+
+## POST
+
+-> no `axios` não precisamos passar o tipo do método como parâmetro, usamos `axios.post` para o POST
+
+-> também temos que usar o objeto a ser inserido (no caso um novo usuário) como parâmetro da nossa função
+
+```js
+function addNewUser(newUser) {
+    axios.post(url, newUser)
+        .then(res => {
+            console.log(res)
+        })
+        .catch(e => console.error(e))
+}
+
+const newUser = {
+    name: "Igor",
+    avatar: "https://picsum.photos/200/300",
+    city: "Florianópolis"
+}
+```
+
+
+
+## GET com parâmetros
+
+-> o atributo `data` contém o conteúdo da resposta da nossa API, portanto podemos criar uma constante para facilitar o uso
+
+-> aqui passamos o `id` como parâmetro para podermos filtrar cada usuário pelo seu respectivo ID
+    -> getUser(2) = irá mostrar as informações (nome, cidade, id, imagem) do usuário de ID `2`
+
+```js
+function getUser(id) {
+    axios.get(`${url}/${id}`)
+        .then(res => {
+            const data = res.data
+            userName.textContent = data.name
+            userCity.textContent = data.city
+            userID.textContent = data.id
+            userAvatar.src = data.avatar
+        })
+        .catch(e => console.error(e))
+}
+
+const newUser = {
+    name: "Igor",
+    avatar: "https://picsum.photos/200/300",
+    city: "Florianópolis"
+}
+```
