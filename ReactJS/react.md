@@ -196,3 +196,183 @@
 
 ## Imutabilidade
 
+-> princípio dos estados do React
+
+-> o conteúdo não deve ser alterado, mas sim substituído
+    -> deixa a aplicação mais performática
+
+-> existe uma função para atualizar o conteúdo do estado  (ex: `setWorkerName`)
+
+```jsx
+// por estarmos trabalhando com uma lista, devemos criar um vetor para armazenar os conteúdos de cada usuário
+const [workers, setWorkers] = useState([]);
+
+  // criamos uma função para, ao clicar no botão, adicionarmos um usuário à lista
+  function handleAddWorker() {
+    
+    const newWorker = {
+      name: workerName,
+      timeEntrada: new Date().toLocaleTimeString("pt-br", {
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      timeSaida: '15:00' 
+    };
+
+    // para conseguirmos armazenar os estados passados, devemos utilizar esta conotação, senão ele iria sempre atualizar o mesmo estado
+    setWorkers(prevState => [...prevState, newWorker]);
+  }
+
+  return(
+    // cortei o resto do html
+
+    // aplicamos a função `onClick` para executar a função criada antes, `handleAddWorker`
+    <button type="button" onClick={handleAddWorker}>
+        Adicionar
+    </button>
+
+    // aqui por ser um vetor, podemos usar a função `.map`, que aplica uma função para cada posição do vetor
+    // no nosso caso, será uma função que cria um componente `Card` para cada `worker`, com os atributos baseados na construção do nosso usuário feita na constante `newWorker` 
+    {
+        workers.map(worker => <Card name={worker.name} timeEntrada={worker.timeEntrada} timeSaida={worker.timeSaida}/>)
+      }
+  )
+```
+
+
+
+## Key Prop
+
+-> é a ideia de adicionar para cada propriedade uma key única, para que as listagem fiquem mais performáticas, como editar/excluir algum elemento
+
+```jsx
+{
+    workers.map(worker => (
+        <Card 
+            // a boa prática seria termos um `id` para cada elemento, porém aqui utilizei o tempo local do cadastro, já que o tempo é utilizado os segundos, seria dificil de 2 cadastros serem feitos ao mesmo tempo
+            key={worker.timeEntrada}
+            name={worker.name} 
+            timeEntrada={worker.timeEntrada} 
+            timeSaida={worker.timeSaida}
+        />
+    ))
+}
+```
+
+
+
+## Hooks
+
+-> vem do paradigma funcional (tudo é baseado em funções)
+
+-> a idéia de usar funções mais simples, independentes
+
+-> melhora do ciclo de vida das aplicações (simplificado)
+
+-> desenvolver componentes com mais flexibilidade
+
+-> useState = hook que armazenar estado (conteúdo), e conectar esse estado à nossa interface, para que ela inicie um novo ciclo toda vez que esse conteúdo mudar 
+
+
+
+## Header
+
+-> construção de um header mais organizado
+
+```html
+<header>
+    <h1>Lista</h1>
+
+        <div>
+          <strong>Igor</strong>
+          <img src="https://github.com/igorjosemartins.png" alt="Foto de Perfil" />
+        </div>
+</header>
+```
+
+```css
+.container header {
+    width: 50%;
+    margin: 84px 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container header img {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    margin-left: 7px;
+}
+
+.container header div {
+    display: flex;
+    align-items: center;
+}
+```
+
+
+
+## useEffect
+
+-> `import React, { useEffect } from 'react`;
+
+-> estrutura do hook:
+    -> `useEffect(() => {}, [])`
+        -> `() =>` =  arrow function 
+        -> `{}` = corpo do useEffect = ações/aquilo que eu quero que execute
+        -> `[]` = array de dependências = quais são os estados que esse useEffect depende
+            -> ou seja, se eu boto um estado neste array, toda vez que este estado for atualizado, o useEffect será executado
+
+-> é executado (automaticamente) assim que a nossa interface é renderizada
+
+
+
+## Consumindo API
+
+-> deixando o `header` dinâmico, usando `useEffect` para consumir a API do github
+
+```jsx
+// criamos as constantes que queremos utilizar, nome e foto
+const [user, setUser] = useState({ name: '', avatar: '' })
+
+useEffect(() => {
+    // usamos o fetch = api padrão js de requisições http
+    fetch('https://api.github.com/users/igorjosemartins')
+    .then(res => res.json())
+    .then(data => { 
+      setUser({
+        name: data.name,
+        avatar: data.avatar_url
+      })
+    })
+    .catch(e => console.error(e))
+  }, []);
+```
+
+
+
+## useEffect Async
+
+-> o `useEffect` não pode ser utilizado de forma assíncrona (async)
+
+-> porém podemos criar uma função assíncrona dentro dele, e depois chamar ela
+
+-> consumindo a API do github de forma async:
+
+```jsx
+useEffect(() => {
+    async function fetchData() {
+        const response = await fetch('https://api.github.com/users/igorjosemartins')
+        const data = await response.json()
+        
+        setUser({
+            name: data.name,
+            avatar: data.avatar_url,
+        }) 
+    };
+
+    fetchData();
+}, []);
+```

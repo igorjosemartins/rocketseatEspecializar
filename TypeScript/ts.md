@@ -1,0 +1,198 @@
+
+# TypeScript
+
+-> traz tipagem para o JavaScript
+
+-> server para manter a consistência da aplicação
+    -> mais simples de encontrar erros
+
+-> tudo é JS, porém o TS compila para uma versão do JS que seja compatível com o seu contexto
+
+
+
+## Por que usar TypeScript
+
+-> os erros aparecem na hora da codificação, não na execução
+    -> trazendo rapidez e facilidade na etapa de desenvolvimento
+
+-> TypeScript Playground = https://www.typescriptlang.org = compila diretamente no browser
+
+-> instalar extensão `Quokka.js`
+    -> executa linhas js em tempo real
+
+-> clicar em Quokka na parte inferior do vscode
+    -> "Launch Interactive Demo"
+
+
+
+## Tipagem Explícita
+
+```ts
+// para tipar um parâmetro usar ":", podemos usar "|" para dar mais de um tipo para o mesmo dado
+function showTicket(user: string | null, ticket: number) {
+    // "??" = condição para caso seja null
+    console.log(`nome: ${user ?? 'Usuário Padrão'}, ticket: ${ticket}`)
+}
+
+showTicket(null, 123)
+```
+
+
+
+## Any
+
+-> a tipagem padrão do TS é `any`, que pode ser qualquer tipo
+
+-> não é uma boa prática
+
+-> podemos forçar o ts a usar passando `any` como tipo
+    -> ex: `data: any`
+
+
+
+## Tipos Primitivos
+
+-> `boolean`
+
+-> `string`
+
+-> `number`
+
+
+
+## Matrizes
+
+-> 2 formas de tipar um array
+
+```ts
+let numbers: number[];
+numbers = [1, 2, 3, 4, 5];
+
+let users: Array<string>;
+users = ['Rodrigo', 'João'];
+```
+
+
+
+## Funções
+
+-> `void` = função que não tem um retorno
+
+-> o TS infere de forma automática o tipo da função de acordo com o tipo do retorno
+
+-> também podemos tipar explicitamente o retorno:
+
+```ts
+function showMessages(message: string): string {
+    return message;
+}
+```
+
+
+
+## Union (|)
+
+-> podemos fazer com que uma variável tenha mais de um tipo
+
+```ts
+function printUserId(id: number | string | boolean) {
+    console.log(`O ID do usuário é: ${id}`)
+}
+```
+
+
+
+## Generics
+
+-> tipagem flexível
+
+-> tipagem no momento de declaração 
+
+```ts
+
+/**
+ * Generics:
+    * S => state
+    * T => type
+    * K = key
+    * V => value
+    * E => element
+*/
+function useState<T>() {
+    let state: T;
+
+    function get(){
+        return state;
+    }
+
+    function set(newValue: T){
+        state = newValue;
+    }
+
+    return { get, set}
+}
+
+// aqui eu tipo a função como string
+let newState = useState<string>();
+newState.get();
+newState.set("João");
+
+// portanto aqui, não irá funcionar
+newState.set(123);
+```
+
+
+
+## Type
+
+-> podemos criar um `type` como se fosse uma variável, e lá armazenar os tipos que queremos
+
+-> evita a repetição dos mesmos tipos 
+
+```ts
+type IdType = string | number | undefined;
+
+let userId = IdType;
+
+let adminId = IdType;
+```
+
+
+
+## Type Assertions
+
+-> podemos tipar os atributos de um objeto por `type`
+
+```ts
+type UserResponse = {
+    ui: number;
+    name: string;
+    avatar: string;
+}
+
+let userResponse = {} as UserResponse;
+
+userResponse.ui
+.
+.
+```
+
+
+
+## Objetos
+
+-> tipagem de objetos
+
+```ts
+type Point = {
+    x: number;
+    y: number;
+}
+
+function printCoord(points: Point) {
+    console.log(`O eixo x é: ${points.x}`)
+    console.log(`O eixo y é: ${points.y}`)
+}
+
+printCoord({x: 101, y: 50})
+```
