@@ -173,15 +173,15 @@ type UserResponse = {
 let userResponse = {} as UserResponse;
 
 userResponse.ui
-.
-.
+userResponse.name
+userResponse.avatar
 ```
 
 
 
 ## Objetos
 
--> tipagem de objetos
+-> tipagem de objetos utilizando `type`
 
 ```ts
 type Point = {
@@ -195,4 +195,220 @@ function printCoord(points: Point) {
 }
 
 printCoord({x: 101, y: 50})
+```
+
+
+
+## Opcional
+
+-> as vezes, gostaríamos que uma propriedade de um objeto seja opcional, como por exemplo um id de Admin
+
+-> para isso utilizamos o `?` após o atributo desejado
+
+```ts
+type User = {
+    name: string,
+    email: string,
+    age: number,
+    isAdmin?: boolean
+}
+
+let newUser: User = {
+    name: "igor",
+    email: "igor@email.com",
+    age: 21,
+}
+```
+
+
+
+## Intersecção de Tipos
+
+-> União de dois `types`
+
+```ts
+type Account = {
+    email: string,
+    password: string 
+}
+
+type Char = {
+    nickname: string,
+    level: number
+}
+
+type PlayerInfo = Account & Char
+
+let user: PlayerInfo = {
+    email: "igor@email.com",
+    password: "*****",
+    nickname: "igor",
+    level: 15
+}
+```
+
+
+
+## Interface
+
+-> outra forma de criar tipagens, assim como o `type`, porém não se utiliza o `=`
+
+```ts
+interface User {
+    id: number,
+    name: string
+}
+
+function registerNewUser(newUser: User) {
+    newUser.id
+    newUser.name
+}
+```
+
+
+
+## Diferença entre Type e Interface
+
+-> objetivo é o mesmo = criar/definir tipagem
+
+-> `type`
+    -> mais recomendável, por ser mais simples, flexível, mais fácil de ligar com tipos primitivos
+```ts
+type TUser = {
+    name: string;
+}
+
+type TPayment = {
+    method: string;
+}
+
+type TAccount = TUser & TPayment; 
+```
+
+-> `interface`
+    -> muito utilizada para quem desenvolve libs, devs mais experientes
+
+```ts
+interface IUser {
+    name: string;
+}
+
+interface IPayment {
+    method: string;
+}
+
+interface IAccount extends IUser, IPayment {}
+```
+
+
+
+## tsconfig
+
+-> arquivo de configurações do TS
+    -> nele podemos colocar as regras que o TS terá que seguir na nossa aplicação
+
+-> pode ser criado como um js ou json
+
+
+
+## Aplicando TypeScript
+
+-> iremos transformar um projeto JS em TS
+
+-> `git clone https://github.com/rocketseat-education/lista_presenca/tree/typescript`
+
+-> `npm install`
+
+-> `npm run dev`
+
+
+
+## Adicionando TypeScript
+
+-> `npm install typescript --save-dev` = instala o typescript como dev dep
+
+-> criar um arquivo de configuração = `tsconfig`
+    -> documentação = configs padrão para uma aplicação em Vite
+    -> `https://www.typescriptlang.org/docs/handbook/tsconfig-json.html`
+
+-> é importante lembrar que não precisamos tipar tudo, podemos migrar um projeto em JS para TS de forma gradual, não é preciso tipar tudo
+
+
+
+## Tipando Componentes
+
+-> mudar a extensão do arquivo para `.tsx`
+
+-> para o `ts` entender a sintaxe do `react`, também devemos instalar as dependências
+    -> depende do erro, sempre passar o mouse em cima para mais informações
+    -> no nosso caso: `npm i --save-dev @types/react`
+
+-> no exemplo, Card possui dois atributos, nome e tempo, tipando:
+
+```tsx
+type CardProps = {
+    name: string;
+    time: string;
+}
+
+export function Card(props: CardProps) {
+    //...
+}
+```
+
+
+
+## Tipando Estados
+
+-> mudar a extensão do arquivo para `.tsx`
+
+-> no exemplo, estamos fazendo a lógica da lista através dos `Cards`, portanto a tipagem seria a mesma
+
+-> com isso podemos exportar também um tipo, colocando `export` antes dele
+
+-> para tipar um estado, passamos o tipo assim: `<Type>`
+
+-> por ser um vetor também devemos utilizar o `[]`
+
+```tsx
+import { Card, CardProps } from '.././components/Card';
+
+const [students, setStudents] = useState<CardProps[]>([]);
+```
+
+
+
+## Tipando resposta da API
+
+-> no exemplo, estamos usando a API do github para buscar o nome e o avatar de um perfil, podemos então, tipar a resposta com apenas este dois dados
+
+```tsx
+// tipando:
+type ProfileResponse = {
+    name: string;
+    avatar_url: string;
+}
+
+// para tipar:
+const response = fetch('https://api.github.com/users/igorjosemartins');
+const data = response.json() as ProfileResponse;
+```
+
+-> abaixo, temos um estado que está tendo seus tipos inferidos direto no meio da execução da função
+
+-> se tivermos por exemplo, vários atributos, teríamos que tipar um por um, portanto fazemos:
+
+```tsx
+// má prática
+const [user, setUser] = useState({ name: '', avatar: '' });
+
+
+// boa prática
+type User = {
+    name: string;
+    avatar: string;
+}
+
+// utilizando:
+const [user, setUser] = useState<User>({} as User);
 ```
