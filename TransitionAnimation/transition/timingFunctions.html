@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CSS Transition</title>
+
+    <style>
+        .line {
+            width: 100%;
+            background-color: blue;
+            height: 25px;
+            margin-bottom: 10px;
+
+            transition: width;
+            transition-duration: 2s;
+        }
+
+        body:hover .line {
+            width: 20px;
+            background-color: rgb(255, 0, 234);
+        }
+
+        .ease {
+            transition-timing-function: ease;
+        }
+
+        .linear {
+            transition-timing-function: linear;
+        }
+
+        .easein {
+            transition-timing-function: ease-in;
+        }
+
+        .easeout {
+            transition-timing-function: ease-out;
+        }
+
+        .easeinout {
+            transition-timing-function: ease-in-out;
+        }
+
+        .cubic {
+            transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="line ease">Ease</div>
+
+    <div class="line linear">Linear</div>
+   
+    <div class="line easein">Ease-in</div>
+   
+    <div class="line easeout">Ease-out</div>
+   
+    <div class="line easeinout">Ease-in-out</div>
+   
+    <div class="line cubic">Cubic-Bezier</div>
+</body>
+
+</html>
