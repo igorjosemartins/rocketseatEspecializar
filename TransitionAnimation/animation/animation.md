@@ -54,9 +54,18 @@
 
 ## Animation timing function
 
--> `animation-timing-function` = propriedade que muda a animação da transição
+-> `animation-timing-function:` = propriedade que muda a animação da transição
     -> `ease` - início lento, rápido e final lento (este é o padrão)
     -> `linear` - mesma velocidade do início ao fim
     -> `ease-in` - início lento
     -> `ease-out` - final lento
     -> `ease-in-out` - início e fim lentos
+
+
+
+## Animation fill mode
+
+->  `animation-fill-mode:`
+    ->  `forwards` = pega os atributos padrão, pega os atributos da primeira chave e trava na última chave
+    -> `backwards` = pega os atributos da primeira chave e trava na primeira chave
+    -> `both` = pega os atributos da primeira chave e termina com a última
